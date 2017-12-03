@@ -15,7 +15,7 @@ F2BDIR = fail2ban-ng/fail2ban
 F2BREPO = https://github.com/mini2inz/fail2ban.git
 F2BBRANCH = nextgen
 F2BIMG = fail2ban-ng
-F2BCLONEARG = --depth 1 --no-single-branch
+F2BCLONEARG = --depth 1
 
 SSHIMG = sshf2b
 ```
