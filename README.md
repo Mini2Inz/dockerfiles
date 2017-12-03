@@ -19,3 +19,9 @@ F2BCLONEARG = --depth 1 --no-single-branch
 
 SSHIMG = sshf2b
 ```
+
+# Getting into docker container
+
+```
+$ docker run -it fail2ban-ng:latest /bin/bash
+```

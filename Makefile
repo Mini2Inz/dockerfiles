@@ -8,8 +8,7 @@ F2BGIT = git -C $(F2BDIR)
 
 SSHIMG = sshf2b
 
-
-fail2ban-ng: fail2ban-ng/Dockerfile
+f2b-ng-clone:
 	if [ -d $(F2BDIR)/.git ]; then \
 		$(F2BGIT) remote set-branches --add origin '$(F2BBRANCH)'; \
 		$(F2BGIT) checkout $(F2BBRANCH); \
@@ -17,14 +16,18 @@ fail2ban-ng: fail2ban-ng/Dockerfile
 	else \
 		git clone -b $(F2BBRANCH) $(F2BCLONEARG) $(F2BREPO) $(F2BDIR); \
 	fi
-	docker build -t $(F2BIMG) fail2ban-ng/
+
+f2b-ng-docker: fail2ban-ng/Dockerfile
+	docker build --rm -t $(F2BIMG) fail2ban-ng/
+
+fail2ban-ng: f2b-ng-clone f2b-ng-docker
 
 ssh: ssh/Dockerfile
-	docker build -t $(SSHIMG) --build-arg f2bimg=$(F2BIMG) ssh/
+	docker build --rm -t $(SSHIMG) --build-arg f2bimg=$(F2BIMG) ssh/
 
-all: fail2ban-ng, ssh
+all: fail2ban-ng ssh
 
-.PHONY: fail2ban-ng ssh all clean
+.PHONY: fail2ban-ng ssh all clean f2b-ng-clone f2b-ng-docker
 
 clean:
 	rm -rf $(F2BDIR)
