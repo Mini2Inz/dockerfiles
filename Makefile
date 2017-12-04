@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := all
+
 F2BDIR = fail2ban-ng/fail2ban
 F2BREPO = https://github.com/mini2inz/fail2ban.git
 F2BBRANCH = nextgen
@@ -5,10 +7,10 @@ F2BIMG = fail2ban-ng
 F2BCLONEARG = --depth 1
 F2BGIT = git -C $(F2BDIR)
 
-
 SSHIMG = sshf2b
 
-f2b-ng-clone:
+
+f2b-ng-clone: 
 	if [ -d $(F2BDIR)/.git ]; then \
 		$(F2BGIT) remote set-branches --add origin '$(F2BBRANCH)'; \
 		$(F2BGIT) checkout $(F2BBRANCH); \
