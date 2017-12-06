@@ -29,7 +29,16 @@ ssh: ssh/Dockerfile
 
 all: fail2ban-ng ssh
 
-.PHONY: fail2ban-ng ssh all clean f2b-ng-clone f2b-ng-docker
+CNTNR = $(F2BIMG)
+SSHPORT = 2222
+
+run:
+	docker run -t -i --name $(CNTNR) $(F2BIMG):latest /sbin/my_init -- bash -l
+
+runssh:
+	docker run -d -P --name $(CNTNR) -p $(SSHPORT):22 $(F2BIMG):latest 
+
+.PHONY: fail2ban-ng ssh all clean f2b-ng-clone f2b-ng-docker run runssh
 
 clean:
 	rm -rf $(F2BDIR)

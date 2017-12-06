@@ -23,24 +23,19 @@ F2BIMG = fail2ban-ng
 F2BCLONEARG = --depth 1
 
 SSHIMG = sshf2b
+
+CNTNR = $(F2BIMG) 
+SSHPORT = 2222
 ```
 
 ### Getting into docker container
 
 ```
-$ docker run -it fail2ban-ng:latest /bin/bash
+$ make run CNTNR=container-name F2BIMG=image-name
+```
+or
+```
+$ make runssh CNTNR=f2b F2BIMG=fail2ban-ng SSHPORT=2222
+$ ssh root@localhost -p 2222
 ```
 
-## Building and using ssh docker image
-
-```
-$ make ssh
-$ docker run -d -P --name sshf2b -p 2222:22 sshf2b:latest 
-$ ssh root@localhost -p 2222 
-```
-
-To stop and remove container:
-```
-$ docker stop sshf2b
-$ docker rm sshf2b
-```
