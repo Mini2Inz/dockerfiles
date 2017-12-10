@@ -1,18 +1,13 @@
-## Build all
-```
-$ make
-```
 
 ## Building and using fail2ban-ng docker image
 
 While using `make` you can specify which branch you want to checkout and how the image will be named.
 
 Example:
-```bash
-$ make fail2ban-ng F2BBRANCH=dbext F2BIMG=f2b-dbext
+```
+$ make F2BBRANCH=nextgen_dbext F2BIMG=f2b-dbext
 ```
 
-`F2BIMG` is also used to build docker image with `ssh` server.
 
 List of variables with default values:
 ```
@@ -21,26 +16,20 @@ F2BREPO = https://github.com/mini2inz/fail2ban.git
 F2BBRANCH = nextgen
 F2BIMG = fail2ban-ng
 F2BCLONEARG = --depth 1
+F2BGIT = git -C $(F2BDIR)
 
-SSHIMG = sshf2b
+CNTNR = $(F2BIMG) 
+SSHPORT = 2222
 ```
 
 ### Getting into docker container
 
 ```
-$ docker run -it fail2ban-ng:latest /bin/bash
+$ make run CNTNR=container-name F2BIMG=image-name
+```
+or
+```
+$ make runssh CNTNR=f2b F2BIMG=fail2ban-ng SSHPORT=2222
+$ ssh root@localhost -p 2222
 ```
 
-## Building and using ssh docker image
-
-```
-$ make ssh
-$ docker run -d -P --name sshf2b -p 2222:22 sshf2b:latest 
-$ ssh root@localhost -p 2222 
-```
-
-To stop and remove container:
-```
-$ docker stop sshf2b
-$ docker rm sshf2b
-```

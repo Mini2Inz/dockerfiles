@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := fail2ban-ng
 
 F2BDIR = fail2ban-ng/fail2ban
 F2BREPO = https://github.com/mini2inz/fail2ban.git
@@ -6,8 +6,6 @@ F2BBRANCH = nextgen
 F2BIMG = fail2ban-ng
 F2BCLONEARG = --depth 1
 F2BGIT = git -C $(F2BDIR)
-
-SSHIMG = sshf2b
 
 
 f2b-ng-clone: 
@@ -24,13 +22,24 @@ f2b-ng-docker: fail2ban-ng/Dockerfile
 
 fail2ban-ng: f2b-ng-clone f2b-ng-docker
 
-ssh: ssh/Dockerfile
-	docker build --rm -t $(SSHIMG) --build-arg f2bimg=$(F2BIMG) ssh/
 
-all: fail2ban-ng ssh
+CNTNR = $(F2BIMG)
+SSHPORT = 2222
+CNTNRSSHARGS = -d --cap-add=NET_ADMIN --cap-add=NET_RAW
 
-.PHONY: fail2ban-ng ssh all clean f2b-ng-clone f2b-ng-docker
+run:
+	docker run -t -i --name $(CNTNR) $(F2BIMG):latest /sbin/my_init -- bash -l
+
+runssh:
+	docker run $(CNTNRSSHARGS) --name $(CNTNR) -p $(SSHPORT):22 $(F2BIMG):latest 
+
+
+.PHONY: fail2ban-ng ssh all clean f2b-ng-clone f2b-ng-docker run runssh
 
 clean:
 	rm -rf $(F2BDIR)
+
+cleandocker:
+	docker stop $(CNTNR)
+	docker rm $(CNTNR)
 

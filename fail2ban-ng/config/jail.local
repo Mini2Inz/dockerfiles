@@ -1,0 +1,6 @@
+[DEFAULT]
+bantime = 10m
+
+[sshd]
+enabled = true
+port = 22
