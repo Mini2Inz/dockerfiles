@@ -25,16 +25,21 @@ fail2ban-ng: f2b-ng-clone f2b-ng-docker
 
 CNTNR = $(F2BIMG)
 SSHPORT = 2222
+CNTNRSSHARGS = -d --cap-add=NET_ADMIN --cap-add=NET_RAW
 
 run:
 	docker run -t -i --name $(CNTNR) $(F2BIMG):latest /sbin/my_init -- bash -l
 
 runssh:
-	docker run -d -P --name $(CNTNR) -p $(SSHPORT):22 $(F2BIMG):latest 
+	docker run $(CNTNRSSHARGS) --name $(CNTNR) -p $(SSHPORT):22 $(F2BIMG):latest 
 
 
 .PHONY: fail2ban-ng ssh all clean f2b-ng-clone f2b-ng-docker run runssh
 
 clean:
 	rm -rf $(F2BDIR)
+
+cleandocker:
+	docker stop $(CNTNR)
+	docker rm $(CNTNR)
 
