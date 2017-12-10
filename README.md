@@ -5,7 +5,7 @@ While using `make` you can specify which branch you want to checkout and how the
 
 Example:
 ```
-$ make F2BBRANCH=dbext F2BIMG=f2b-dbext
+$ make F2BBRANCH=nextgen_dbext F2BIMG=f2b-dbext
 ```
 
 
