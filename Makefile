@@ -31,7 +31,7 @@ run:
 	docker run -t -i --name $(CNTNR) $(F2BIMG):latest /sbin/my_init -- bash -l
 
 runssh:
-	docker run $(CNTNRSSHARGS) --name $(CNTNR) -p $(SSHPORT):22 $(F2BIMG):latest 
+	docker run $(CNTNRSSHARGS) --name $(CNTNR) -p 127.0.0.1:$(SSHPORT):22 $(F2BIMG):latest 
 
 
 .PHONY: fail2ban-ng ssh all clean f2b-ng-clone f2b-ng-docker run runssh sshclient
