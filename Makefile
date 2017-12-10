@@ -34,7 +34,7 @@ runssh:
 	docker run $(CNTNRSSHARGS) --name $(CNTNR) -p $(SSHPORT):22 $(F2BIMG):latest 
 
 
-.PHONY: fail2ban-ng ssh all clean f2b-ng-clone f2b-ng-docker run runssh
+.PHONY: fail2ban-ng ssh all clean f2b-ng-clone f2b-ng-docker run runssh sshclient
 
 clean:
 	rm -rf $(F2BDIR)
@@ -43,3 +43,12 @@ cleandocker:
 	docker stop $(CNTNR)
 	docker rm $(CNTNR)
 
+SSHCLIMG = sshclient
+
+sshclient:
+	docker build --rm -t $(SSHCLIMG) sshclient/
+
+CNTNR2 = $(SSHCLIMG)
+
+runsshcl:
+	docker run -ti --name $(CNTNR2) $(SSHCLIMG):latest bash
