@@ -34,7 +34,7 @@ WORKDIR /usr/src/fail2ban
 ADD fail2ban/ .
 RUN ./setup.py install
 
-#COPY config/fail2ban.local /etc/fail2ban/
+COPY config/fail2ban.local /etc/fail2ban/
 COPY config/jail.local /etc/fail2ban/
 
 

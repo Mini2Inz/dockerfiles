@@ -1,2 +1,2 @@
 [Definition]
-background = False
+loglevel = DEBUG
