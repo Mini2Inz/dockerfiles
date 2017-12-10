@@ -39,9 +39,9 @@ COPY config/jail.local /etc/fail2ban/
 
 
 # https://github.com/phusion/baseimage-docker#adding_additional_daemons
-# RUN mkdir /etc/service/fail2ban-ng
-# COPY fail2ban-ng.sh /etc/service/fail2ban-ng/run
-# RUN chmod +x /etc/service/fail2ban-ng/run
+RUN mkdir /etc/service/fail2ban-ng
+COPY fail2ban-ng.sh /etc/service/fail2ban-ng/run
+RUN chmod +x /etc/service/fail2ban-ng/run
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
