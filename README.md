@@ -20,14 +20,11 @@ F2BGIT = git -C $(F2BDIR)
 
 CNTNR = $(F2BIMG) 
 SSHPORT = 2222
+CNTNRSSHARGS = -d --cap-add=NET_ADMIN --cap-add=NET_RAW
 ```
 
 ### Getting into docker container
 
-```
-$ make run CNTNR=container-name F2BIMG=image-name
-```
-or
 ```
 $ make runssh CNTNR=f2b F2BIMG=fail2ban-ng SSHPORT=2222
 $ ssh root@localhost -p 2222
