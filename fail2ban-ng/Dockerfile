@@ -31,11 +31,14 @@ WORKDIR /usr/src/fail2ban
 #COPY requirements.txt ./
 #RUN pip install --no-cache-dir -r requirements.txt
 
-ADD fail2ban/ .
+COPY fail2ban/ .
 RUN ./setup.py install
 
-COPY config/fail2ban.local /etc/fail2ban/
-COPY config/jail.local /etc/fail2ban/
+ARG F2BCONF=empty
+ARG JAILCONF=sshd
+
+COPY config/f2b/${F2BCONF}/fail2ban.local /etc/fail2ban/ 
+COPY config/jails/${JAILCONF}/jail.local /etc/fail2ban/
 
 
 # https://github.com/phusion/baseimage-docker#adding_additional_daemons

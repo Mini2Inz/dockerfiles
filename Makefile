@@ -7,7 +7,10 @@ F2BIMG = fail2ban-ng
 F2BCLONEARG = --depth 1
 F2BGIT = git -C $(F2BDIR)
 
+.PHONY: fail2ban-ng ssh all clean f2b-ng-clone f2b-ng-docker run runssh sshclient fullreset
 
+
+# clone or update repository used to build image
 f2b-ng-clone: 
 	if [ -d $(F2BDIR)/.git ]; then \
 		$(F2BGIT) remote set-branches --add origin '$(F2BBRANCH)'; \
@@ -17,38 +20,51 @@ f2b-ng-clone:
 		git clone -b $(F2BBRANCH) $(F2BCLONEARG) $(F2BREPO) $(F2BDIR); \
 	fi
 
+F2BCONF = debug
+JAILCONF = sshd
+BUILDARGS = --build-arg F2BCONF=$(F2BCONF) --build-arg JAILCONF=$(JAILCONF)
+# build fail2ban docker image
 f2b-ng-docker: fail2ban-ng/Dockerfile
-	docker build --rm -t $(F2BIMG) fail2ban-ng/
+	docker build --rm -t $(F2BIMG) $(BUILDARGS) fail2ban-ng/
 
+# clone repo and build docker image
 fail2ban-ng: f2b-ng-clone f2b-ng-docker
 
+# clean repo
+clean:
+	rm -rf $(F2BDIR)
 
 CNTNR = $(F2BIMG)
 SSHPORT = 2222
 CNTNRSSHARGS = -d --cap-add=NET_ADMIN --cap-add=NET_RAW
+SSHCLIMG = sshclient
+CNTNR2 = $(SSHCLIMG)
 
+# run fail2ban image in container - not recommended
 run:
-	docker run -t -i --name $(CNTNR) $(F2BIMG):latest /sbin/my_init -- bash -l
+	docker run -ti --name $(CNTNR) $(F2BIMG):latest /sbin/my_init -- bash -l
 
+# run fail2ban with ssh server in detatched container - recommended
 runssh:
 	docker run $(CNTNRSSHARGS) --name $(CNTNR) -p 127.0.0.1:$(SSHPORT):22 $(F2BIMG):latest 
 
+# build docker image with ssh client
+sshclient:
+	docker build --rm -t $(SSHCLIMG) sshclient/
 
-.PHONY: fail2ban-ng ssh all clean f2b-ng-clone f2b-ng-docker run runssh sshclient
-
-clean:
-	rm -rf $(F2BDIR)
+# run ssh client in container
+runsshcl:
+	docker run -ti --name $(CNTNR2) $(SSHCLIMG):latest bash
 
 cleandocker:
 	docker stop $(CNTNR)
 	docker rm $(CNTNR)
 
-SSHCLIMG = sshclient
+DEVRELOAD = cleandocker f2b-ng-docker runssh
 
-sshclient:
-	docker build --rm -t $(SSHCLIMG) sshclient/
-
-CNTNR2 = $(SSHCLIMG)
-
-runsshcl:
-	docker run -ti --name $(CNTNR2) $(SSHCLIMG):latest bash
+# default: stop and remove container, build new image, run it in a container 
+# params: 
+# - cleandocker: CNTNR - container to stop and remove
+# - f2b-ng-docker: F2BIMG - docker image name
+# - runssh: runs CNTNR using F2BIMG
+devreload: $(DEVRELOAD)
