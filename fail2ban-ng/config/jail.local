@@ -4,3 +4,5 @@ bantime = 10m
 [sshd]
 enabled = true
 port = 22
+action = badipsIncr.py[time_increment=600]
+		 %(action_)s
