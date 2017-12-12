@@ -42,6 +42,8 @@ SSHCLIMG = sshclient
 CNTNR2 = $(SSHCLIMG)
 
 DEVRELOAD = cleandocker f2b-ng-docker runssh
+
+BOTIMG = sshbot
 ```
 
 ### Getting into docker container
@@ -59,3 +61,38 @@ $ make devreload
 ``` 
 `F2BIMG` will be used as image and container name if `CNTNR` was not defined.
 
+## Botnet
+
+### Docker image
+Just run `make sshbotimg`. You can change the image name (`BOTIMG`).
+
+### Configuration
+Botnet can be configured in `botnet.config`. In each line you can specify number of bots that will try to ssh into specified host on given port. 
+
+Example:
+```
+5 172.17.0.2 1234
+```
+5 bots will try to connect server with an IP 172.17.0.2 that listens on por 1234. Default credentials are root/12345.
+
+
+### Start botnet
+```
+$ cd sshbot
+sshbot $ python botnet.py
+```
+This will start some number of bots in containers named `sshbot<id>` where id is in [1,...,n] and n is total number of spawned bots.
+
+Parameters:
+```
+--stop, type=bool, default=False
+--bots, type=int, help="number of containers with bots to stop", default=0
+"-i","--image", type=str, default="sshbot:latest"
+"-c","--container", type=str, default="sshbot"
+```
+
+### Stop botnet
+```
+$ python botnet.py --stop True --bots 5 
+```
+You can pass an argument with container name if it's not deafualt `sshbot`.
