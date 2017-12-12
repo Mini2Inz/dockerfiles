@@ -1,11 +1,11 @@
 
 ## Building and using fail2ban-ng docker image
 
-While using `make` you can specify which branch you want to checkout and how the image will be named.
+When you build image you can specify which branch you want to checkout and how the image will be named.
 
 Example:
 ```
-$ make F2BBRANCH=nextgen_dbext F2BIMG=f2b-dbext
+$ make fail2ban-ng F2BBRANCH=nextgen_dbext F2BIMG=f2b-dbext
 ```
 
 ### Configuring Fail2ban

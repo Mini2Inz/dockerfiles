@@ -68,3 +68,9 @@ DEVRELOAD = cleandocker f2b-ng-docker runssh
 # - f2b-ng-docker: F2BIMG - docker image name
 # - runssh: runs CNTNR using F2BIMG
 devreload: $(DEVRELOAD)
+
+
+BOTIMG = sshbot
+# build ssh bot image
+sshbotimg: sshbot/Dockerfile sshbot/bot.py sshbot/requirements.txt
+	docker build --rm -t $(BOTIMG) sshbot/
