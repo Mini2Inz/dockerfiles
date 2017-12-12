@@ -73,7 +73,7 @@ Example:
 ```
 5 172.17.0.2 1234
 ```
-5 bots will try to connect server with an IP 172.17.0.2 that listens on por 1234. Default credentials are root/12345.
+5 bots will try to connect server with an IP 172.17.0.2 that listens on port 1234. Default credentials are root/12345.
 
 
 ### Start botnet
@@ -95,4 +95,4 @@ Parameters:
 ```
 $ python botnet.py --stop True --bots 5 
 ```
-You can pass an argument with container name if it's not deafualt `sshbot`.
+You can pass an argument with container name if it's not default `sshbot`.
