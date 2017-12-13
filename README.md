@@ -78,21 +78,23 @@ Example:
 
 ### Start botnet
 ```
-$ cd sshbot
-sshbot $ python botnet.py
+$ ./botnet.py
 ```
+
+If script is not executable use `chmod +x`.
+
 This will start some number of bots in containers named `sshbot<id>` where id is in [1,...,n] and n is total number of spawned bots.
 
 Parameters:
 ```
---stop, type=bool, default=False
---bots, type=int, help="number of containers with bots to stop", default=0
-"-i","--image", type=str, default="sshbot:latest"
-"-c","--container", type=str, default="sshbot"
+-b, --bots, type=int - number of containers with bots to stop, default=0
+-i, --image, type=str, default=sshbot:latest
+-c, --container, type=str, default=sshbot
+--bash, type=bool - choose bot script, default=True
 ```
 
 ### Stop botnet
 ```
-$ python botnet.py --stop True --bots 5 
+$ ./botnet.py --bots 5 
 ```
 You can pass an argument with container name if it's not default `sshbot`.
