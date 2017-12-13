@@ -73,7 +73,7 @@ Example:
 ```
 5 172.17.0.2 1234
 ```
-5 bots will try to connect server with an IP 172.17.0.2 that listens on port 1234. Default credentials are root/12345.
+5 bots will try to connect server with an IP 172.17.0.2 that listens on port 1234. Default credentials are root/passwordddd.
 
 
 ### Start botnet
@@ -83,7 +83,7 @@ $ ./botnet.py
 
 If script is not executable use `chmod +x`.
 
-This will start some number of bots in containers named `sshbot<id>` where id is in [1,...,n] and n is total number of spawned bots.
+This will start `n` bots in containers named `sshbot<id>` where id is in `[1,2,...,n]`. Id range can be shifted with `--id` parameter passed to `botnet.py` to spawn additional bots.
 
 Parameters:
 ```
@@ -91,10 +91,11 @@ Parameters:
 -i, --image, type=str, default=sshbot:latest
 -c, --container, type=str, default=sshbot
 --bash, type=bool - choose bot script, default=True
+--id, type=int, default=0
 ```
 
 ### Stop botnet
 ```
-$ ./botnet.py --bots 5 
+$ ./botnet.py -b 5
 ```
 You can pass an argument with container name if it's not default `sshbot`.

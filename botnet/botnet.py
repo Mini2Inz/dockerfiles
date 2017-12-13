@@ -1,8 +1,8 @@
 #!/bin/python3
 
-from subprocess import call
 import argparse
 import asyncio
+from time import sleep
 
 class BotnetConfig:
 	def __init__(self, bot_count, host, port):
@@ -18,7 +18,6 @@ def parse_config(configline):
 		int(config_args[2]) if len(config_args) == 3 else 22)
 
 async def start_bot(botId, config, args):
-	proc = None
 	if args.bash:
 		proc = await asyncio.create_subprocess_exec(
 			"docker", "run", "-d", "--name", args.container + str(botId), args.image,
@@ -27,11 +26,11 @@ async def start_bot(botId, config, args):
 		proc = await asyncio.create_subprocess_exec(
 			"docker", "run", "-d", "--name", args.container + str(botId), args.image, 
 			"python", "bot.py", config.host, "-p", str(config.port))
-	returncode = await proc.wait()
-	print(returncode)
+	code = await proc.wait()
+	if code != 0: print(str(botId) + " returned " + str(code))
 
 def run_botnet(args):
-	botId = 0
+	botId = args.id
 	loop = asyncio.get_event_loop()
 	tasks = []
 	with open("botnet.config", "r") as f:
@@ -40,6 +39,7 @@ def run_botnet(args):
 			config = parse_config(configline)			
 
 			for i in range(0, config.bot_count):
+				if args.sleeptime > 0.0 and (botId - 1)%5 == 0: sleep(args.sleeptime)
 				botId += 1
 				tasks.append(asyncio.ensure_future(start_bot(botId, config, args)))
 
@@ -51,11 +51,11 @@ def run_botnet(args):
 async def stop_bot(container, botId):
 	cntnr = container + str(botId)
 	proc = await asyncio.create_subprocess_exec("docker", "stop", cntnr)
-	returncode = await proc.wait()
-	print(returncode)
+	code = await proc.wait()
+	if code != 0: print(str(botId) + " returned " + str(code))
 	proc2 = await asyncio.create_subprocess_exec("docker", "rm", cntnr)
-	returncode2 = await proc2.wait()
-	print(returncode2)
+	code2 = await proc2.wait()
+	if code2 != 0: print(str(botId) + " returned (2) " + str(code2))
 
 def stop_botnet(args):
 	if args.bots <= 0:
@@ -75,7 +75,9 @@ parser.add_argument("-b", "--bots", type=int, help="number of containers with bo
 parser.add_argument("-i", "--image", type=str, default="sshbot:latest")
 parser.add_argument("-c", "--container", type=str, default="sshbot")
 parser.add_argument("--bash", type=bool, default=True)
-args = parser.parse_args();
+parser.add_argument("--id", type=int, help="last id used for container", default=0)
+parser.add_argument("-t", "--sleeptime", type=float, default=0.0, help="sleep time between containers startup")
+args = parser.parse_args()
 
 if args.bots == 0:
 	run_botnet(args)
