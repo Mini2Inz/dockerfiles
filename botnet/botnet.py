@@ -1,3 +1,5 @@
+#!/bin/python3
+
 from subprocess import call
 import argparse
 import asyncio
@@ -16,9 +18,15 @@ def parse_config(configline):
 		int(config_args[2]) if len(config_args) == 3 else 22)
 
 async def start_bot(botId, config, args):
-	proc = await asyncio.create_subprocess_exec(
-		"docker", "run", "-d", "--name", args.container + str(botId), args.image, 
-		"python", "bot.py", config.host, "-p", str(config.port))
+	proc = None
+	if args.bash:
+		proc = await asyncio.create_subprocess_exec(
+			"docker", "run", "-d", "--name", args.container + str(botId), args.image,
+			"/bot/bot.sh", "root@"+config.host, "-p", str(config.port))
+	else:
+		proc = await asyncio.create_subprocess_exec(
+			"docker", "run", "-d", "--name", args.container + str(botId), args.image, 
+			"python", "bot.py", config.host, "-p", str(config.port))
 	returncode = await proc.wait()
 	print(returncode)
 
@@ -63,13 +71,13 @@ def stop_botnet(args):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--stop", type=bool, default=False)
-parser.add_argument("--bots", type=int, help="number of containers with bots to stop", default=0)
-parser.add_argument("-i","--image", type=str, default="sshbot:latest")
-parser.add_argument("-c","--container", type=str, default="sshbot")
+parser.add_argument("-b", "--bots", type=int, help="number of containers with bots to stop", default=0)
+parser.add_argument("-i", "--image", type=str, default="sshbot:latest")
+parser.add_argument("-c", "--container", type=str, default="sshbot")
+parser.add_argument("--bash", type=bool, default=True)
 args = parser.parse_args();
 
-if args.stop == False:
+if args.bots == 0:
 	run_botnet(args)
 else:
 	stop_botnet(args)
