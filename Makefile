@@ -3,7 +3,6 @@
 F2BDIR = fail2ban-ng/fail2ban
 F2BREPO = https://github.com/mini2inz/fail2ban.git
 F2BBRANCH = nextgen
-F2BIMG = fail2ban-ng
 F2BCLONEARG = --depth 1
 F2BGIT = git -C $(F2BDIR)
 
@@ -20,12 +19,19 @@ f2b-ng-clone:
 		git clone -b $(F2BBRANCH) $(F2BCLONEARG) $(F2BREPO) $(F2BDIR); \
 	fi
 
-F2BCONF = debug
-JAILCONF = sshd
-BUILDARGS = --build-arg F2BCONF=$(F2BCONF) --build-arg JAILCONF=$(JAILCONF)
 # build fail2ban docker image
-f2b-ng-docker: fail2ban-ng/Dockerfile
-	docker build --rm -t $(F2BIMG) $(BUILDARGS) fail2ban-ng/
+f2b-ng-docker: f2b-ng-docker-base f2b-ng-docker-conf
+
+F2BIMG = fail2ban-ng
+F2BCONF = empty
+JAILCONF = sshd
+f2b-ng-docker-base: fail2ban-ng/f2bbase.Dockerfile
+	docker build --rm -t $(F2BIMG) -f fail2ban-ng/f2bbase.Dockerfile fail2ban-ng/
+
+F2BIMG_C = fail2ban-ng2
+BUILDARGS = --build-arg F2BCONF=$(F2BCONF) --build-arg JAILCONF=$(JAILCONF) --build-arg F2BIMG=$(F2BIMG) 
+f2b-ng-docker-conf: fail2ban-ng/f2bconf.Dockerfile
+	docker build --rm -t $(F2BIMG_C) $(BUILDARGS) -f fail2ban-ng/f2bconf.Dockerfile fail2ban-ng/
 
 # clone repo and build docker image
 fail2ban-ng: f2b-ng-clone f2b-ng-docker

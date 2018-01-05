@@ -40,7 +40,6 @@ ARG JAILCONF=sshd
 COPY config/f2b/${F2BCONF}/fail2ban.local /etc/fail2ban/ 
 COPY config/jails/${JAILCONF}/jail.local /etc/fail2ban/
 
-
 # https://github.com/phusion/baseimage-docker#adding_additional_daemons
 RUN mkdir /etc/service/fail2ban-ng
 COPY fail2ban-ng.sh /etc/service/fail2ban-ng/run
