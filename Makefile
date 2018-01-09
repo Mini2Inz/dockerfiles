@@ -29,7 +29,8 @@ f2b-ng-docker-base: fail2ban-ng/f2bbase.Dockerfile
 	docker build --rm -t $(F2BIMG) -f fail2ban-ng/f2bbase.Dockerfile fail2ban-ng/
 
 F2BIMG_C = fail2ban-ng2
-BUILDARGS = --build-arg F2BCONF=$(F2BCONF) --build-arg JAILCONF=$(JAILCONF) --build-arg F2BIMG=$(F2BIMG) 
+HOSTS = hosts
+BUILDARGS = --build-arg F2BCONF=$(F2BCONF) --build-arg JAILCONF=$(JAILCONF) --build-arg F2BIMG=$(F2BIMG) --build-arg HOSTS=$(HOSTS)
 f2b-ng-docker-conf: fail2ban-ng/f2bconf.Dockerfile
 	docker build --rm -t $(F2BIMG_C) $(BUILDARGS) -f fail2ban-ng/f2bconf.Dockerfile fail2ban-ng/
 
