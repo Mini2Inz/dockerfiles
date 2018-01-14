@@ -21,7 +21,8 @@ RUN apt-get update && apt-get install -y \
 	software-properties-common \
 	python-software-properties \
 	geoip-bin \
-	iptables
+	iptables \
+	python-pip
 
 #RUN add-apt-repository ppa:jonathonf/python-3.6
 #RUN apt-get update && apt-get install -y python3.6
@@ -42,7 +43,7 @@ COPY config/jails/${JAILCONF}/jail.local /etc/fail2ban/
 
 # https://github.com/phusion/baseimage-docker#adding_additional_daemons
 RUN mkdir /etc/service/fail2ban-ng
-COPY fail2ban-ng.sh /etc/service/fail2ban-ng/run
+COPY fail2ban-ng-debug.sh /etc/service/fail2ban-ng/run
 RUN chmod +x /etc/service/fail2ban-ng/run
 
 # Clean up APT when done.

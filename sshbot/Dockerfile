@@ -1,9 +1,7 @@
-FROM python:3.6.3-slim
+FROM alpine:3.7
 
-RUN apt-get update && apt-get install -y ssh-client sshpass
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN apk add --no-cache openssh-client sshpass
 
-# WORKDIR /bot
-# COPY requirements.txt ./
-# RUN pip install --no-cache-dir -r requirements.txt
-# COPY bot.py .
+WORKDIR /bot
+COPY bot.sh .
+RUN chmod +x bot.sh

@@ -43,7 +43,7 @@ clean:
 
 CNTNR = $(F2BIMG)
 SSHPORT = 2222
-CNTNRSSHARGS = -d --cap-add=NET_ADMIN --cap-add=NET_RAW
+CNTNRSSHARGS = -d --cap-add=NET_ADMIN --cap-add=NET_RAW --cap-add=SYS_PTRACE
 SSHCLIMG = sshclient
 CNTNR2 = $(SSHCLIMG)
 
@@ -79,5 +79,5 @@ devreload: $(DEVRELOAD)
 
 BOTIMG = sshbot
 # build ssh bot image
-sshbotimg: sshbot/Dockerfile sshbot/bot.py sshbot/requirements.txt
+sshbotimg: sshbot/Dockerfile sshbot/bot.sh
 	docker build --rm -t $(BOTIMG) sshbot/
