@@ -65,7 +65,7 @@ def stop_botnet(args):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-b", "--bots", type=int, help="number of containers with bots to start", default=0)
-    parser.add_argument("-s", "--stop", type=int, help="number of containers with bots to start", default=0)
+    parser.add_argument("-s", "--stop", type=int, help="number of containers with bots to stop", default=0)
     parser.add_argument("-i", "--image", type=str, default="sshbot:latest")
     parser.add_argument("-c", "--container", type=str, default="sshbot")
     parser.add_argument("--id", type=int, help="last id used for container", default=0)
