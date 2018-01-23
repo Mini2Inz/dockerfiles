@@ -15,14 +15,16 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-EXPOSE 22
+EXPOSE 22 80
 
 RUN apt-get update && apt-get install -y \
 	software-properties-common \
 	python-software-properties \
 	geoip-bin \
 	iptables \
-	python-pip
+	python-pip \
+	lighttpd \
+	apache2-utils
 
 #RUN add-apt-repository ppa:jonathonf/python-3.6
 #RUN apt-get update && apt-get install -y python3.6
@@ -36,15 +38,15 @@ COPY fail2ban/ .
 RUN ./setup.py install
 
 ARG F2BCONF=empty
-ARG JAILCONF=sshd
+ARG JAILCONF=ssh_lighty
 
-COPY config/f2b/${F2BCONF}/fail2ban.local /etc/fail2ban/ 
-COPY config/jails/${JAILCONF}/jail.local /etc/fail2ban/
+COPY config/f2b/${F2BCONF} /etc/fail2ban/fail2ban.local
+COPY config/jails/${JAILCONF} /etc/fail2ban/jail.local
 
-# https://github.com/phusion/baseimage-docker#adding_additional_daemons
-RUN mkdir /etc/service/fail2ban-ng
-COPY fail2ban-ng.sh /etc/service/fail2ban-ng/run
-RUN chmod +x /etc/service/fail2ban-ng/run
+RUN mkdir /service
+COPY service/ /service/
+RUN bash /service/setup.sh
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+

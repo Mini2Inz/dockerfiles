@@ -10,6 +10,13 @@ _term () {
 trap _term SIGTERM
 trap _term SIGINT
 
+rand_sleep() {
+	rng2=$(($RANDOM % 5))
+	echo $rng2
+	sleep ${rng2}s & pid=$!
+	wait
+}
+
 declare -a hostsArr
 hostsCount=0
 while IFS='' read -r line || [[ -n "$line" ]]; do
@@ -22,14 +29,21 @@ if [ $hostsCount == 0 ]; then
 fi
 
 while [ $DOWORK == 1 ]; do
-	rng2=$(($RANDOM % 10))
-	echo $rng2
-	sleep ${rng2}s & pid=$!
-	wait
+	rand_sleep
 
 	rng=$(($RANDOM % $hostsCount))
 	host=${hostsArr[rng]}
 	echo $host
-	timeout -t 10 sshpass -p passwordddd ssh $host -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null & pid=$!
+	sshpass -p passwordddd ssh $host -o StrictHostKeyChecking=no UserKnownHostsFile=/dev/null & pid=$!
+	wait
+
+	rand_sleep
+
+	rng=$(($RANDOM % $hostsCount))
+	host=${hostsArr[rng]}
+	echo $host
+	host2=(${host//@/ })
+	wget http://${host2[0]}:pass@${host2[1]}/bitcoins/bitcoin & pid=$!
 	wait
 done
+

@@ -1,0 +1,13 @@
+[DEFAULT]
+bantime = 10m
+
+[sshd]
+enabled = true
+port = 22
+
+[lighttpd-auth]
+enabled = true
+port = 80
+logpath = /var/log/lighttpd/err.log
+
+
