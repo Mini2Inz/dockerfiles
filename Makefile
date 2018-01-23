@@ -24,7 +24,7 @@ f2b-ng-docker: f2b-ng-docker-base f2b-ng-docker-conf
 
 F2BIMG = fail2ban-ng
 F2BCONF = empty
-JAILCONF = sshd
+JAILCONF = ssh_lighty
 f2b-ng-docker-base: fail2ban-ng/f2bbase.Dockerfile
 	docker build --rm -t $(F2BIMG) -f fail2ban-ng/f2bbase.Dockerfile fail2ban-ng/
 

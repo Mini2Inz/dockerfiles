@@ -38,10 +38,10 @@ COPY fail2ban/ .
 RUN ./setup.py install
 
 ARG F2BCONF=empty
-ARG JAILCONF=sshd
+ARG JAILCONF=ssh_lighty
 
-COPY config/f2b/${F2BCONF}/fail2ban.local /etc/fail2ban/ 
-COPY config/jails/${JAILCONF}/jail.local /etc/fail2ban/
+COPY config/f2b/${F2BCONF} /etc/fail2ban/fail2ban.local
+COPY config/jails/${JAILCONF} /etc/fail2ban/jail.local
 
 RUN mkdir /service
 COPY service/ /service/
@@ -49,3 +49,4 @@ RUN bash /service/setup.sh
 
 # Clean up APT when done.
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
